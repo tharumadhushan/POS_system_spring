@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#nav-item").click(function () {
+    $("#item-nav").click(function () {
         loadAllItem();
     });
     $("#save_item").click(function () {
@@ -26,43 +26,40 @@ $(document).ready(function () {
         });
     });
 
-$("#update_item").click(function (){
-    let codeF = $("#item_id").val();
-    let descrF = $("#desc").val();
-    let qtyF = $("#qty").val();
-    let unitPriceF = $("#price").val();
+    $("#update_item").click(function (){
+        let formData = new FormData();
+        formData.append("item_code", $("#item_id").val());
+        formData.append("description", $("#desc").val());
+        formData.append("qty", $("#qty").val());
+        formData.append("unitPrice", $("#price").val());
 
-    $.ajax({
-        method:"PUT",
-        contentType:"application/json",
-        url:"http://localhost:8081/mini_pos_war_exploded/item",
-        async:true,
-        data:JSON.stringify({
-            code:codeF,
-            descr:descrF,
-            qty:qtyF,
-            unitPrice:unitPriceF
+        $.ajax({
+            method:"PATCH",
+            url:"http://localhost:8080/POS_system_spring_war_exploded/api/v1/item",
+            async:true,
+            processData: false,
+            contentType: false,
+            data:formData,
+            success: function (data) {
+                reset()
+                alert("saved")
+            },
+            error: function (xhr, exception) {
+                alert("Error")
+            }
 
-        }),
-        success: function (data) {
-            reset()
-            alert("saved")
-        },
-        error: function (xhr, exception) {
-            alert("Error")
-        }
+        })
 
-    })
-
-});
+    });
 
 $("#delete_item").click(function () {
     let item_idF = $("#item_id").val();
 
     $.ajax({
         method: "DELETE",
-        contentType: "application/json",
-        url: "http://localhost:8081/mini_pos_war_exploded/item?code=" + item_idF,
+        url: "http://localhost:8080/POS_system_spring_war_exploded/api/v1/item/" + item_idF,
+        processData: false,
+        contentType: false,
         async: true,
         success: function (data) {
             reset()
@@ -86,35 +83,35 @@ $("#delete_item").click(function () {
             loadAllItem();
         }
 
-
-        const loadAllItem = () => {
-            $("#item-tbl-body").empty();
-            $.ajax({
-                url: "http://http://localhost:8080/POS_system_spring_war_exploded/api/v1/item",
-                method: "GET",
-                dataType: "json",
-                success: function (resp) {
-                    console.log(resp);
-                    for (const item of resp) {
-                        let row = `<tr><td>${item.code}</td><td>${item.description}</td><td>${item.qty}</td><td>${item.unitPrice}</td></tr>;`
-                        $("#item-tbl-body").append(row);
-                    }
-                    callMethod();
+    const loadAllItem = () => {
+        $("#item-tbl-body").empty();
+        $.ajax({
+            url: "http://localhost:8080/POS_system_spring_war_exploded/api/v1/item",
+            method: "GET",
+            dataType: "json",
+            success: function (resp) {
+                console.log(resp);
+                for (const item of resp) {
+                    let row = `<tr><td>${item.item_code}</td><td>${item.description}</td><td>${item.qty}</td><td>${item.unitPrice}</td></tr>;`
+                    $("#item-tbl-body").append(row);
                 }
-            });
-        }
+                callMethod();
+            }
+        });
+    }
 
 function callMethod(){
     $("#item-tbl-body>tr").click(function (){
-        let code =$(this).children().eq(0).text();
-        let descr =$(this).children().eq(1).text();
+        let item_code =$(this).children().eq(0).text();
+        let description =$(this).children().eq(1).text();
         let qty =$(this).children().eq(2).text();
         let unitPrice =$(this).children().eq(3).text();
 
-        $("#item_id").val(code);
-        $("#desc").val(descr);
+        $("#item_id").val(item_code);
+        $("#desc").val(description);
         $("#qty").val(qty);
         $("#price").val(unitPrice);
     })
 }
 });
+
