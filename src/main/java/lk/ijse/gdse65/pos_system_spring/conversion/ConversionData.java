@@ -2,8 +2,10 @@ package lk.ijse.gdse65.pos_system_spring.conversion;
 
 import lk.ijse.gdse65.pos_system_spring.dto.CustomerDTO;
 import lk.ijse.gdse65.pos_system_spring.dto.ItemDTO;
+import lk.ijse.gdse65.pos_system_spring.dto.OrderDTO;
 import lk.ijse.gdse65.pos_system_spring.entity.CustomerEntity;
 import lk.ijse.gdse65.pos_system_spring.entity.ItemEntity;
+import lk.ijse.gdse65.pos_system_spring.entity.OrderEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -34,5 +36,15 @@ public class ConversionData {
     }
     public List<ItemDTO> getItemDTOList(List<ItemEntity> itemEntityList) {
         return modelMapper.map(itemEntityList,List.class);
+    }
+
+    public OrderDTO convertToOrderDTO(OrderEntity order){
+        return modelMapper.map(order,OrderDTO.class);
+    }
+    public OrderEntity convertToOrderEntity(OrderDTO orderDTO){
+        return modelMapper.map(orderDTO,OrderEntity.class);
+    }
+    public List<OrderDTO> getOrderDTOList(List<OrderEntity> orderEntityList) {
+        return modelMapper.map(orderEntityList,List.class);
     }
 }
